@@ -1,0 +1,1 @@
+- [x] Modify processLogin function in app/Controllers/Auth.php to set session and handle AJAX requests as specified.

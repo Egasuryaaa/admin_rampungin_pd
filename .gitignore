@@ -1,0 +1,54 @@
+# ----------------------------------------
+# CodeIgniter 4 .gitignore
+# ----------------------------------------
+
+# Environment files
+.env
+.env.*
+!env.example
+
+# Database config (jangan di-push)
+app/Config/Database.php
+
+# Vendor dependencies
+/vendor/
+
+# Node dependencies (if using frontend tools)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Build artifacts
+/public/build/
+/public/assets/js/
+/public/assets/css/
+/writable/debugbar/
+/writable/cache/
+/writable/logs/
+/writable/session/
+/writable/uploads/
+/writable/topup/
+/writable/profiles/
+
+# IDE and OS files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Composer artifacts
+composer.lock
+
+# PHPUnit
+phpunit.xml
+phpunit.xml.dist
+.phpunit.result.cache
+
+# Temporary files
+*.swp
+*.bak
+*.tmp
+*.log

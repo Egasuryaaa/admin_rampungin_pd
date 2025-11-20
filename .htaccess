@@ -1,0 +1,32 @@
+# .htaccess for CodeIgniter 4
+
+# Enable URL rewriting
+RewriteEngine On
+
+# Set the base directory for rewriting
+RewriteBase /admintukang/
+
+# IMPORTANT: Pass Authorization header to PHP
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# CORS Headers - Allow all localhost origins
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, Accept, Origin"
+Header always set Access-Control-Allow-Credentials "true"
+Header always set Access-Control-Max-Age "86400"
+
+# Handle OPTIONS preflight request
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# Redirect any requests for index.php to the clean URL
+RewriteCond %{THE_REQUEST} ^.*/index\.php
+RewriteRule ^(.*)index\.php$ /$1 [R=301,L]
+
+# If the requested file/directory does not exist,
+# route it through index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
