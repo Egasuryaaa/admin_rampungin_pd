@@ -10,38 +10,45 @@ class AdminAuthFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        // Debug logging (hapus setelah testing)
+        $session = session();
+
+        // Debug logging
         log_message('debug', '=== AdminAuthFilter START ===');
         log_message('debug', 'Current URI: ' . uri_string());
-        log_message('debug', 'Current URL: ' . current_url());
-        log_message('debug', 'Session isLoggedIn: ' . (session()->get('isLoggedIn') ? 'YES' : 'NO'));
-        log_message('debug', 'Session ses_userId: ' . (session()->get('ses_userId') ?? 'NULL'));
-        log_message('debug', 'Session ses_roleId: ' . (session()->get('ses_roleId') ?? 'NULL'));
+        log_message('debug', 'JWT Token exists: ' . ($session->has('jwt_token') ? 'YES' : 'NO'));
+        log_message('debug', 'Is Logged In: ' . ($session->get('is_logged_in') ? 'YES' : 'NO'));
+        log_message('debug', 'User Role: ' . ($session->get('role') ?? 'NULL'));
 
-        // Cek apakah user sudah login
-        if (!session()->get('isLoggedIn')) {
-            log_message('debug', 'AdminAuthFilter: Not logged in, redirecting to /login');
+        // Check if user is logged in with JWT token
+        if (!$session->has('jwt_token') || !$session->get('is_logged_in')) {
+            log_message('debug', 'AdminAuthFilter: Not logged in, redirecting to /auth/login');
             
-            // Simpan URL tujuan untuk redirect setelah login
-            session()->set('redirect_url', current_url());
+            // Save target URL for redirect after login
+            $session->set('redirect_url', current_url());
             
-            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
+            return redirect()->to('/auth/login')
+                ->with('error', 'Silakan login terlebih dahulu');
         }
 
-        // Cek apakah user adalah admin (role_id = 1)
-        $roleId = session()->get('ses_roleId');
-        if (!$roleId || (int)$roleId !== 1) {
-            log_message('warning', 'AdminAuthFilter: Non-admin user (role: ' . $roleId . ') trying to access admin area');
-            session()->destroy();
-            return redirect()->to('/login')->with('error', 'Akses ditolak. Hanya admin yang diizinkan.');
+        // Check if user role is 'admin'
+        $role = $session->get('role');
+        if (!$role || $role !== 'admin') {
+            log_message('warning', 'AdminAuthFilter: Non-admin user (role: ' . $role . ') trying to access admin area');
+            $session->destroy();
+            return redirect()->to('/auth/login')
+                ->with('error', 'Akses ditolak. Hanya admin yang dapat mengakses halaman ini.');
         }
 
-        log_message('debug', 'AdminAuthFilter: Authentication passed');
+        log_message('debug', 'AdminAuthFilter: Authentication passed for user: ' . $session->get('username'));
         log_message('debug', '=== AdminAuthFilter END ===');
+        
+        // Allow request to continue
+        return null;
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
-        // Nothing to do after
+        // Nothing to do after request
+        return $response;
     }
 }

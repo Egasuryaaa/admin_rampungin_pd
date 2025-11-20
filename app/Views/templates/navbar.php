@@ -30,45 +30,36 @@
                         <span class="nxl-mtext">User Management</span><span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
                     </a>
                     <ul class="nxl-submenu">
-                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('usermanagement/daftar-user') ?>">Daftar User</a></li>
-                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('usermanagement/daftar-tukang')?>">Daftar Tukang</a></li>
-                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('usermanagement/roles-and-permissions') ?>">Roles & Permissions</a></li>
+                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('admin/users/clients') ?>">Daftar Client</a></li>
+                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('admin/users/tukang') ?>">Daftar Tukang</a></li>
+                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('admin/users/verifications/tukang') ?>">Verifikasi Tukang</a></li>
+                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('admin/users') ?>">Semua User</a></li>
                     </ul>
                 </li>
                 
-                <!-- Wallet & Transaksi - Icon: Credit Card -->
+                <!-- Finance Management - Icon: Credit Card -->
                 <li class="nxl-item nxl-hasmenu">
                     <a href="javascript:void(0);" class="nxl-link">
                         <span class="nxl-micon"><i class="feather-credit-card"></i></span>
-                        <span class="nxl-mtext">Wallet & Transaksi</span><span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
+                        <span class="nxl-mtext">Keuangan</span><span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
                     </a>
                     <ul class="nxl-submenu">
-                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('wallet-transaksi/wallet-tukang') ?>">Wallet Tukang</a></li>
-                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('wallet-transaksi/topup') ?>">Topup</a></li>
-                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('wallet-transaksi/withdraw') ?>">Withdraw (tarik tunai)</a></li>
-                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('wallet-transaksi/semua-transaksi') ?>">Transaksi</a></li>
+                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('admin/finance/topup') ?>">Kelola Top-Up</a></li>
+                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('admin/finance/withdrawal') ?>">Kelola Penarikan</a></li>
                     </ul>
                 </li>
                 
-                <!-- Rating & Feedback - Icon: Star -->
-                <li class="nxl-item nxl-hasmenu">
-                    <a href="javascript:void(0);" class="nxl-link">
-                        <span class="nxl-micon"><i class="feather-star"></i></span>
-                        <span class="nxl-mtext">Rating & Feedback</span><span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
-                    </a>
-                    <ul class="nxl-submenu">
-                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('orders/reviews') ?>">Review & Feedback</a></li>
-                    </ul>
-                </li>
+
                 
-                <!-- Kategori & Layanan - Icon: Layers atau Briefcase -->
+                <!-- Kategori & Transaksi - Icon: Layers -->
                 <li class="nxl-item nxl-hasmenu">
                     <a href="javascript:void(0);" class="nxl-link">
                         <span class="nxl-micon"><i class="feather-layers"></i></span>
-                        <span class="nxl-mtext">Kategori & Layanan</span><span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
+                        <span class="nxl-mtext">Master Data</span><span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
                     </a>
                     <ul class="nxl-submenu">
-                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('categories') ?>">Kategori Tukang</a></li>
+                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('admin/categories') ?>">Kategori Tukang</a></li>
+                        <li class="nxl-item"><a class="nxl-link" href="<?= base_url('admin/transactions') ?>">Monitor Transaksi</a></li>
                     </ul>
                 </li>
             </ul>

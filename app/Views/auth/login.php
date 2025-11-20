@@ -58,11 +58,24 @@
                     <h4 class="fs-13 fw-bold mb-2">Admin Login</h4>
 
                     <!-- Error Message -->
+                    <?php if (session()->getFlashdata('error')): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <?= session()->getFlashdata('error') ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (session()->getFlashdata('success')): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?= session()->getFlashdata('success') ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
                     <div id="pesan_error" class="alert alert-danger d-none" role="alert"></div>
 
-                    <form id="formLogin" class="w-100 mt-4 pt-2">
+                    <form id="formLogin" action="<?= base_url('auth/login') ?>" method="POST" class="w-100 mt-4 pt-2">
+                        <?= csrf_field() ?>
                         <div class="mb-3">
-                            <input type="email" class="form-control" name="email" placeholder="masukkan Email yang valid!" required id="email">
+                            <input type="email" class="form-control" name="email" placeholder="masukkan Email yang valid!" required id="email" value="<?= old('email') ?>">
                         </div>
                         <div class="mb-3">
                             <input type="password" class="form-control" name="password" placeholder="masukkan password yang valid!" required id="password">
