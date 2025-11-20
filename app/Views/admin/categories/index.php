@@ -77,69 +77,6 @@
                                                             </button>
                                                         </td>
                                                     </tr>
-
-                                                    <!-- Edit Modal -->
-                                                    <div class="modal fade" id="editCategoryModal<?= $category['id_kategori'] ?? $category['id'] ?>" tabindex="-1">
-                                                        <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                                <form action="<?= base_url('admin/categories/update/' . ($category['id_kategori'] ?? $category['id'])) ?>" method="POST">
-                                                                    <?= csrf_field() ?>
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title">Edit Kategori</h5>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <div class="mb-3">
-                                                                            <label class="form-label">Nama Kategori <span class="text-danger">*</span></label>
-                                                                            <input type="text" class="form-control" name="nama" 
-                                                                                   value="<?= esc($category['nama'] ?? '') ?>" required>
-                                                                        </div>
-                                                                        <div class="mb-3">
-                                                                            <label class="form-label">Deskripsi</label>
-                                                                            <textarea class="form-control" name="deskripsi" rows="3"><?= esc($category['deskripsi'] ?? '') ?></textarea>
-                                                                        </div>
-                                                                        <div class="mb-3">
-                                                                            <div class="form-check form-switch">
-                                                                                <input class="form-check-input" type="checkbox" name="is_active" value="true" 
-                                                                                       <?= ($category['is_active'] ?? true) ? 'checked' : '' ?>>
-                                                                                <label class="form-check-label">Aktif</label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                                        <button type="submit" class="btn btn-primary">Update Kategori</button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Delete Modal -->
-                                                    <div class="modal fade" id="deleteCategoryModal<?= $category['id_kategori'] ?? $category['id'] ?>" tabindex="-1">
-                                                        <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                                <form action="<?= base_url('admin/categories/delete/' . ($category['id_kategori'] ?? $category['id'])) ?>" method="POST">
-                                                                    <?= csrf_field() ?>
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title">Hapus Kategori</h5>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <div class="alert alert-danger">
-                                                                            <i class="feather-alert-triangle"></i> 
-                                                                            <strong>Peringatan!</strong> Tindakan ini tidak dapat dibatalkan.
-                                                                        </div>
-                                                                        <p>Yakin ingin menghapus kategori <strong><?= esc($category['nama'] ?? 'N/A') ?></strong>?</p>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                                        <button type="submit" class="btn btn-danger">Hapus Kategori</button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 <?php endforeach; ?>
                                             <?php else: ?>
                                                 <tr>
@@ -155,6 +92,73 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal Section -->
+        <?php if (!empty($categories)): ?>
+            <?php foreach ($categories as $category): ?>
+                <!-- Edit Modal for <?= esc($category['nama'] ?? 'N/A') ?> -->
+                <div class="modal fade" id="editCategoryModal<?= $category['id_kategori'] ?? $category['id'] ?>" tabindex="-1" aria-labelledby="editModalLabel<?= $category['id_kategori'] ?? $category['id'] ?>" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="<?= base_url('admin/categories/update/' . ($category['id_kategori'] ?? $category['id'])) ?>" method="POST">
+                                <?= csrf_field() ?>
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel<?= $category['id_kategori'] ?? $category['id'] ?>">Edit Kategori</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nama Kategori <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="nama" value="<?= esc($category['nama'] ?? '') ?>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Deskripsi</label>
+                                        <textarea class="form-control" name="deskripsi" rows="3"><?= esc($category['deskripsi'] ?? '') ?></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="is_active" value="true" 
+                                                   <?= ($category['is_active'] ?? true) ? 'checked' : '' ?>>
+                                            <label class="form-check-label">Aktif</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary">Update Kategori</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Modal for <?= esc($category['nama'] ?? 'N/A') ?> -->
+                <div class="modal fade" id="deleteCategoryModal<?= $category['id_kategori'] ?? $category['id'] ?>" tabindex="-1" aria-labelledby="deleteModalLabel<?= $category['id_kategori'] ?? $category['id'] ?>" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="<?= base_url('admin/categories/delete/' . ($category['id_kategori'] ?? $category['id'])) ?>" method="POST">
+                                <?= csrf_field() ?>
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel<?= $category['id_kategori'] ?? $category['id'] ?>">Hapus Kategori</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="alert alert-danger">
+                                        <i class="feather-alert-triangle"></i> 
+                                        <strong>Peringatan!</strong> Tindakan ini tidak dapat dibatalkan.
+                                    </div>
+                                    <p>Yakin ingin menghapus kategori <strong><?= esc($category['nama'] ?? 'N/A') ?></strong>?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-danger">Hapus Kategori</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
 
         <!-- Create Category Modal -->
         <div class="modal fade" id="createCategoryModal" tabindex="-1">
@@ -194,14 +198,3 @@
         </div>
 
 <?php include APPPATH . 'Views/templates/footer.php'; ?>
-
-<script>
-    $(document).ready(function() {
-        $('#categoriesTable').DataTable({
-            "paging": true,
-            "searching": true,
-            "ordering": true,
-            "info": true
-        });
-    });
-</script>

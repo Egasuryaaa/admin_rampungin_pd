@@ -34,11 +34,7 @@ class Filters extends BaseFilters
         'forcehttps'     => ForceHTTPS::class,
         'pagecache'      => PageCache::class,
         'performance'    => PerformanceMetrics::class,
-        'AntiBruteForce' => \App\Filters\BruteForce\AntiBruteForce::class,
-        'authGuard'      => \App\Filters\AuthGuard::class,
-        'apiAuth'        => \App\Filters\ApiAuthFilter::class,
         'adminAuth'      => \App\Filters\AdminAuthFilter::class,
-        'jwt'            => \App\Filters\JwtAuthFilter::class
     ];
 
     /**
@@ -114,23 +110,16 @@ class Filters extends BaseFilters
      * @var array<string, array<string, list<string>>>
      */
     public array $filters = [
-        'authGuard' => [
-            'before' => [
-                'admin/*', // Melindungi semua rute yang diawali dengan 'admin/'
-            ],
-        ],
         'adminAuth' => [
             'before' => [
-                'usermanagement/*',  // Protect all user management routes
-                'dashboard',         // Protect dashboard
-                'admin/*'           // Protect admin routes
+                'admin/*'           // Protect all admin routes
             ],
             'except' => [
                 '/',
+                'auth/*',
                 'login',
                 'login/*',
-                'logout',
-                'api/*'
+                'logout'
             ]
         ]
     ];

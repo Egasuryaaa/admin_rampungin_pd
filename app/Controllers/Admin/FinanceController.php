@@ -131,10 +131,20 @@ class FinanceController extends BaseController
         }
 
         // Prepare data for view
+        $pagination = $response['data']['pagination'] ?? null;
+        if (!$pagination || !isset($pagination['current_page'])) {
+            $pagination = [
+                'current_page' => 1,
+                'total_pages' => 1,
+                'total_items' => 0,
+                'per_page' => 20
+            ];
+        }
+        
         $data = [
             'page_title' => 'Manajemen Penarikan Dana',
             'withdrawal_list' => $response['data']['withdrawal'] ?? [],
-            'pagination' => $response['data']['pagination'] ?? null,
+            'pagination' => $pagination,
             'error' => !$response['success'],
             'message' => $response['message'] ?? null,
         ];

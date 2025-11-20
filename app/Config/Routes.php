@@ -39,7 +39,7 @@ $routes->get('dashboard', function() {
 // ADMIN ROUTES (Authentication Required)
 // =====================================================
 
-$routes->group('admin', ['filter' => 'adminauth'], function($routes) {
+$routes->group('admin', ['filter' => 'adminAuth'], function($routes) {
     
     // Dashboard
     $routes->get('dashboard', 'Admin\DashboardController::index', ['as' => 'admin.dashboard']);
@@ -94,9 +94,7 @@ $routes->group('admin', ['filter' => 'adminauth'], function($routes) {
     
     $routes->group('categories', function($routes) {
         $routes->get('/', 'Admin\CategoryController::index', ['as' => 'admin.categories']);
-        $routes->get('create', 'Admin\CategoryController::create', ['as' => 'admin.categories.create']);
-        $routes->post('store', 'Admin\CategoryController::store', ['as' => 'admin.categories.store']);
-        $routes->get('edit/(:num)', 'Admin\CategoryController::edit/$1', ['as' => 'admin.categories.edit']);
+        $routes->post('create', 'Admin\CategoryController::create', ['as' => 'admin.categories.create']);
         $routes->post('update/(:num)', 'Admin\CategoryController::update/$1', ['as' => 'admin.categories.update']);
         $routes->post('delete/(:num)', 'Admin\CategoryController::delete/$1', ['as' => 'admin.categories.delete']);
     });
@@ -107,6 +105,7 @@ $routes->group('admin', ['filter' => 'adminauth'], function($routes) {
     
     $routes->group('transactions', function($routes) {
         $routes->get('/', 'Admin\TransactionController::index', ['as' => 'admin.transactions']);
+        $routes->get('export', 'Admin\TransactionController::export', ['as' => 'admin.transactions.export']);
         $routes->get('detail/(:num)', 'Admin\TransactionController::detail/$1', ['as' => 'admin.transactions.detail']);
     });
 
@@ -135,7 +134,7 @@ $routes->group('admin', ['filter' => 'adminauth'], function($routes) {
 // API ROUTES (if you want to add AJAX endpoints)
 // =====================================================
 
-$routes->group('api', ['filter' => 'adminauth'], function($routes) {
+$routes->group('api', ['filter' => 'adminAuth'], function($routes) {
     
     // Dashboard Stats
     $routes->get('dashboard/stats', 'Admin\DashboardController::getStats');

@@ -101,32 +101,6 @@
                                                                     <i class="feather-x"></i> Reject
                                                                 </button>
                                                             </div>
-
-                                                            <!-- Reject Modal -->
-                                                            <div class="modal fade" id="rejectModal<?= $topup['id'] ?>" tabindex="-1">
-                                                                <div class="modal-dialog">
-                                                                    <div class="modal-content">
-                                                                        <form action="<?= base_url('admin/finance/topup/verify/' . $topup['id']) ?>" method="POST">
-                                                                            <?= csrf_field() ?>
-                                                                            <input type="hidden" name="action" value="reject">
-                                                                            <div class="modal-header">
-                                                                                <h5 class="modal-title">Tolak Top-Up</h5>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <div class="mb-3">
-                                                                                    <label class="form-label">Alasan Penolakan</label>
-                                                                                    <textarea name="alasan_penolakan" class="form-control" rows="3" required placeholder="Masukkan alasan penolakan..."></textarea>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                                                <button type="submit" class="btn btn-danger">Tolak Top-Up</button>
-                                                                            </div>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
                                                         <?php else: ?>
                                                             <span class="text-muted">-</span>
                                                         <?php endif; ?>
@@ -167,22 +141,37 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Reject Modals Section -->
+        <?php if (!empty($topup_list)): ?>
+            <?php foreach ($topup_list as $topup): ?>
+                <?php if ($topup['status'] == 'pending'): ?>
+                    <div class="modal fade" id="rejectModal<?= $topup['id'] ?>" tabindex="-1" aria-labelledby="rejectModalLabel<?= $topup['id'] ?>" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="<?= base_url('admin/finance/topup/verify/' . $topup['id']) ?>" method="POST">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="action" value="reject">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="rejectModalLabel<?= $topup['id'] ?>">Tolak Top-Up</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
+                                            <textarea name="alasan_penolakan" class="form-control" rows="3" required placeholder="Masukkan alasan penolakan..."></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-danger">Tolak Top-Up</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
 
 <?php include APPPATH . 'Views/templates/footer.php'; ?>
-
-<script>
-    $(document).ready(function() {
-        // Initialize DataTable
-        $('#topupList').DataTable({
-            "paging": false,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Indonesian.json"
-            }
-        });
-    });
-</script>

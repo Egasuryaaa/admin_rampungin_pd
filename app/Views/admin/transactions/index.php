@@ -164,10 +164,10 @@
                                                             </span>
                                                         </td>
                                                         <td>
-                                                            <?php if (!empty($trx['rating'])): ?>
+                                                            <?php if (!empty($trx['rating']) && is_numeric($trx['rating'])): ?>
                                                                 <div class="d-flex align-items-center">
                                                                     <i class="feather-star text-warning me-1"></i>
-                                                                    <strong><?= number_format($trx['rating'], 1) ?></strong>
+                                                                    <strong><?= number_format((float)$trx['rating'], 1) ?></strong>
                                                                 </div>
                                                             <?php else: ?>
                                                                 <span class="text-muted">-</span>

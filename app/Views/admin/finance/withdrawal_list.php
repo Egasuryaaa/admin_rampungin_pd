@@ -85,68 +85,6 @@
                                                                         data-bs-target="#rejectModal<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>">
                                                                     <i class="feather-x"></i> Tolak
                                                                 </button>
-
-                                                                <!-- Confirm Modal -->
-                                                                <div class="modal fade" id="confirmModal<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" tabindex="-1">
-                                                                    <div class="modal-dialog">
-                                                                        <div class="modal-content">
-                                                                            <form action="<?= base_url('admin/finance/withdrawal/confirm/' . ($withdrawal['id_penarikan'] ?? $withdrawal['id'])) ?>" 
-                                                                                  method="POST" enctype="multipart/form-data">
-                                                                                <?= csrf_field() ?>
-                                                                                <div class="modal-header">
-                                                                                    <h5 class="modal-title">Konfirmasi Penarikan</h5>
-                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                                </div>
-                                                                                <div class="modal-body">
-                                                                                    <p>Konfirmasi penarikan sebesar <strong>Rp <?= number_format($withdrawal['jumlah_penarikan'] ?? 0, 0, ',', '.') ?></strong>?</p>
-                                                                                    <div class="mb-3">
-                                                                                        <label class="form-label">Upload Bukti Transfer <span class="text-danger">*</span></label>
-                                                                                        <input type="file" class="form-control" name="bukti_transfer" 
-                                                                                               accept="image/*,application/pdf" required>
-                                                                                        <small class="text-muted">Format: JPG, PNG, PDF (Max 5MB)</small>
-                                                                                    </div>
-                                                                                    <div class="mb-3">
-                                                                                        <label class="form-label">Catatan (Opsional)</label>
-                                                                                        <textarea class="form-control" name="catatan" rows="3"></textarea>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="modal-footer">
-                                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                                                    <button type="submit" class="btn btn-success">Konfirmasi Transfer</button>
-                                                                                </div>
-                                                                            </form>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Reject Modal -->
-                                                                <div class="modal fade" id="rejectModal<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" tabindex="-1">
-                                                                    <div class="modal-dialog">
-                                                                        <div class="modal-content">
-                                                                            <form action="<?= base_url('admin/finance/withdrawal/reject/' . ($withdrawal['id_penarikan'] ?? $withdrawal['id'])) ?>" method="POST">
-                                                                                <?= csrf_field() ?>
-                                                                                <div class="modal-header">
-                                                                                    <h5 class="modal-title">Tolak Penarikan</h5>
-                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                                </div>
-                                                                                <div class="modal-body">
-                                                                                    <p>Tolak penarikan sebesar <strong>Rp <?= number_format($withdrawal['jumlah_penarikan'] ?? 0, 0, ',', '.') ?></strong>?</p>
-                                                                                    <div class="alert alert-info">
-                                                                                        <i class="feather-info"></i> Poin akan dikembalikan ke user
-                                                                                    </div>
-                                                                                    <div class="mb-3">
-                                                                                        <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
-                                                                                        <textarea class="form-control" name="alasan_penolakan" rows="4" required></textarea>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="modal-footer">
-                                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                                                    <button type="submit" class="btn btn-danger">Tolak Penarikan</button>
-                                                                                </div>
-                                                                            </form>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
                                                             <?php else: ?>
                                                                 <span class="text-muted">-</span>
                                                             <?php endif; ?>
@@ -187,16 +125,74 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Withdrawal Modals Section -->
+        <?php if (!empty($withdrawal_list)): ?>
+            <?php foreach ($withdrawal_list as $withdrawal): ?>
+                <?php if ($withdrawal['status'] == 'pending'): ?>
+                    <!-- Confirm Modal -->
+                    <div class="modal fade" id="confirmModal<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" tabindex="-1" aria-labelledby="confirmModalLabel<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="<?= base_url('admin/finance/withdrawal/confirm/' . ($withdrawal['id_penarikan'] ?? $withdrawal['id'])) ?>" 
+                                      method="POST" enctype="multipart/form-data">
+                                    <?= csrf_field() ?>
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmModalLabel<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>">Konfirmasi Penarikan</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Konfirmasi penarikan sebesar <strong>Rp <?= number_format($withdrawal['jumlah_penarikan'] ?? 0, 0, ',', '.') ?></strong>?</p>
+                                        <div class="mb-3">
+                                            <label class="form-label">Upload Bukti Transfer <span class="text-danger">*</span></label>
+                                            <input type="file" class="form-control" name="bukti_transfer" 
+                                                   accept="image/*,application/pdf" required>
+                                            <small class="text-muted">Format: JPG, PNG, PDF (Max 5MB)</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Catatan (Opsional)</label>
+                                            <textarea class="form-control" name="catatan" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-success">Konfirmasi Transfer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reject Modal -->
+                    <div class="modal fade" id="rejectModal<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" tabindex="-1" aria-labelledby="rejectModalLabel<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="<?= base_url('admin/finance/withdrawal/reject/' . ($withdrawal['id_penarikan'] ?? $withdrawal['id'])) ?>" method="POST">
+                                    <?= csrf_field() ?>
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="rejectModalLabel<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>">Tolak Penarikan</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Tolak penarikan sebesar <strong>Rp <?= number_format($withdrawal['jumlah_penarikan'] ?? 0, 0, ',', '.') ?></strong>?</p>
+                                        <div class="alert alert-info">
+                                            <i class="feather-info"></i> Poin akan dikembalikan ke user
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" name="alasan_penolakan" rows="4" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-danger">Tolak Penarikan</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
 
 <?php include APPPATH . 'Views/templates/footer.php'; ?>
-
-<script>
-    $(document).ready(function() {
-        $('#withdrawalTable').DataTable({
-            "paging": false,
-            "searching": true,
-            "ordering": true,
-            "info": false
-        });
-    });
-</script>

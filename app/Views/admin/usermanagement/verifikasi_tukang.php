@@ -120,60 +120,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Approve Modal -->
-                                <div class="modal fade" id="approveModal<?= $t['id_user'] ?? $t['id'] ?>" tabindex="-1">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <form action="<?= base_url('admin/users/verifications/tukang/' . ($t['id_user'] ?? $t['id'])) ?>" method="POST">
-                                                <?= csrf_field() ?>
-                                                <input type="hidden" name="action" value="approve">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Setujui Verifikasi</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Yakin ingin menyetujui verifikasi tukang <strong><?= esc($t['nama_lengkap'] ?? 'N/A') ?></strong>?</p>
-                                                    <div class="alert alert-info">
-                                                        <i class="feather-info"></i> Tukang akan dapat menerima pesanan setelah diverifikasi.
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                    <button type="submit" class="btn btn-success">Setujui</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Reject Modal -->
-                                <div class="modal fade" id="rejectModal<?= $t['id_user'] ?? $t['id'] ?>" tabindex="-1">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <form action="<?= base_url('admin/users/verifications/tukang/' . ($t['id_user'] ?? $t['id'])) ?>" method="POST">
-                                                <?= csrf_field() ?>
-                                                <input type="hidden" name="action" value="reject">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Tolak Verifikasi</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Tolak verifikasi tukang <strong><?= esc($t['nama_lengkap'] ?? 'N/A') ?></strong>?</p>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
-                                                        <textarea class="form-control" name="alasan_penolakan" rows="4" required 
-                                                                  placeholder="Jelaskan alasan penolakan verifikasi"></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                    <button type="submit" class="btn btn-danger">Tolak</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -208,5 +154,64 @@
                 <?php endif; ?>
             </div>
         </div>
+        
+        <!-- Verification Modals Section -->
+        <?php if (!empty($tukang)): ?>
+            <?php foreach ($tukang as $t): ?>
+                <!-- Approve Modal -->
+                <div class="modal fade" id="approveModal<?= $t['id_user'] ?? $t['id'] ?>" tabindex="-1" aria-labelledby="approveModalLabel<?= $t['id_user'] ?? $t['id'] ?>" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="<?= base_url('admin/users/verifications/tukang/' . ($t['id_user'] ?? $t['id'])) ?>" method="POST">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="action" value="approve">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="approveModalLabel<?= $t['id_user'] ?? $t['id'] ?>">Setujui Verifikasi</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Yakin ingin menyetujui verifikasi tukang <strong><?= esc($t['nama_lengkap'] ?? 'N/A') ?></strong>?</p>
+                                    <div class="alert alert-info">
+                                        <i class="feather-info"></i> Tukang akan dapat menerima pesanan setelah diverifikasi.
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-success">Setujui</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reject Modal -->
+                <div class="modal fade" id="rejectModal<?= $t['id_user'] ?? $t['id'] ?>" tabindex="-1" aria-labelledby="rejectModalLabel<?= $t['id_user'] ?? $t['id'] ?>" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="<?= base_url('admin/users/verifications/tukang/' . ($t['id_user'] ?? $t['id'])) ?>" method="POST">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="action" value="reject">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="rejectModalLabel<?= $t['id_user'] ?? $t['id'] ?>">Tolak Verifikasi</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Tolak verifikasi tukang <strong><?= esc($t['nama_lengkap'] ?? 'N/A') ?></strong>?</p>
+                                    <div class="mb-3">
+                                        <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
+                                        <textarea class="form-control" name="alasan_penolakan" rows="4" required 
+                                                  placeholder="Jelaskan alasan penolakan verifikasi"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-danger">Tolak</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
 
 <?php include APPPATH . 'Views/templates/footer.php'; ?>

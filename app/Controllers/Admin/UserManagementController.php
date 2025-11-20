@@ -49,10 +49,20 @@ class UserManagementController extends BaseController
         }
 
         // Prepare data for view
+        $pagination = $response['data']['pagination'] ?? null;
+        if (!$pagination || !isset($pagination['current_page'])) {
+            $pagination = [
+                'current_page' => 1,
+                'total_pages' => 1,
+                'total_items' => 0,
+                'per_page' => 20
+            ];
+        }
+        
         $data = [
             'page_title' => 'Manajemen User',
             'users' => $response['data']['users'] ?? [],
-            'pagination' => $response['data']['pagination'] ?? null,
+            'pagination' => $pagination,
             'filters' => $filters,
             'error' => !$response['success'],
             'message' => $response['message'] ?? null,
@@ -89,16 +99,26 @@ class UserManagementController extends BaseController
         }
 
         // Prepare data for view
+        $pagination = $response['data']['pagination'] ?? null;
+        if (!$pagination || !isset($pagination['current_page'])) {
+            $pagination = [
+                'current_page' => 1,
+                'total_pages' => 1,
+                'total_items' => 0,
+                'per_page' => 20
+            ];
+        }
+        
         $data = [
-            'page_title' => 'Daftar Client',
+            'page_title' => 'Daftar User (Client)',
             'users' => $response['data']['users'] ?? [],
-            'pagination' => $response['data']['pagination'] ?? null,
+            'pagination' => $pagination,
             'filters' => $filters,
             'error' => !$response['success'],
             'message' => $response['message'] ?? null,
         ];
 
-        return view('admin/usermanagement/daftar-user', $data);
+        return view('admin/usermanagement/users_list', $data);
     }
 
     /**
@@ -130,16 +150,26 @@ class UserManagementController extends BaseController
         }
 
         // Prepare data for view
+        $pagination = $response['data']['pagination'] ?? null;
+        if (!$pagination || !isset($pagination['current_page'])) {
+            $pagination = [
+                'current_page' => 1,
+                'total_pages' => 1,
+                'total_items' => 0,
+                'per_page' => 20
+            ];
+        }
+        
         $data = [
             'page_title' => 'Daftar Tukang',
             'users' => $response['data']['users'] ?? [],
-            'pagination' => $response['data']['pagination'] ?? null,
+            'pagination' => $pagination,
             'filters' => $filters,
             'error' => !$response['success'],
             'message' => $response['message'] ?? null,
         ];
 
-        return view('admin/usermanagement/daftar-tukang', $data);
+        return view('admin/usermanagement/users_list', $data);
     }
 
     /**
@@ -275,12 +305,17 @@ class UserManagementController extends BaseController
         $data = [
             'page_title' => 'Verifikasi Tukang',
             'tukang' => $response['data']['tukang'] ?? [],
-            'pagination' => $response['data']['pagination'] ?? null,
+            'pagination' => $response['data']['pagination'] ?? [
+                'current_page' => 1,
+                'total_pages' => 1,
+                'total_items' => 0,
+                'per_page' => 20
+            ],
             'error' => !$response['success'],
             'message' => $response['message'] ?? null,
         ];
 
-        return view('admin/usermanagement/verifikasi-tukang', $data);
+        return view('admin/usermanagement/verifikasi_tukang', $data);
     }
 
     /**

@@ -17,7 +17,6 @@
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/daterangepicker.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
