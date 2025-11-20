@@ -1,5 +1,8 @@
 <?php include APPPATH . 'Views/templates/header.php'; ?>
 
+
+<!-- ega -->
+
     <main class="nxl-container">
         <div class="nxl-content">
             <div class="page-header">
