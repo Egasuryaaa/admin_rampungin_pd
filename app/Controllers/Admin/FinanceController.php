@@ -130,20 +130,47 @@ class FinanceController extends BaseController
                 ->with('error', $response['message']);
         }
 
-        // Prepare data for view
-        $pagination = $response['data']['pagination'] ?? null;
-        if (!$pagination || !isset($pagination['current_page'])) {
-            $pagination = [
-                'current_page' => 1,
-                'total_pages' => 1,
-                'total_items' => 0,
-                'per_page' => 20
-            ];
+        // Map API data to expected format
+        $withdrawalList = [];
+        if (!empty($response['data']['withdrawal'])) {
+            foreach ($response['data']['withdrawal'] as $item) {
+                $withdrawalList[] = [
+                    'id' => $item['id'],
+                    'id_penarikan' => $item['id'],
+                    'jumlah_penarikan' => $item['jumlah'],
+                    'jumlah' => $item['jumlah'],
+                    'nama_bank' => $item['nama_bank'],
+                    'nomor_rekening' => $item['nomor_rekening'],
+                    'nama_pemilik_rekening' => $item['nama_pemilik_rekening'],
+                    'biaya_admin' => $item['biaya_admin'],
+                    'jumlah_bersih' => $item['jumlah_bersih'],
+                    'status' => $item['status'],
+                    'bukti_transfer' => $item['bukti_transfer'],
+                    'alasan_penolakan' => $item['alasan_penolakan'],
+                    'tanggal_penarikan' => $item['created_at'],
+                    'created_at' => $item['created_at'],
+                    'user' => [
+                        'id' => $item['users_penarikan_tukang_idTousers']['id'],
+                        'nama_lengkap' => $item['users_penarikan_tukang_idTousers']['nama_lengkap'],
+                        'email' => $item['users_penarikan_tukang_idTousers']['email'],
+                        'poin' => $item['users_penarikan_tukang_idTousers']['poin'],
+                    ]
+                ];
+            }
         }
+
+        // Prepare pagination
+        $apiPagination = $response['data']['pagination'] ?? null;
+        $pagination = [
+            'current_page' => $apiPagination['page'] ?? 1,
+            'total_pages' => $apiPagination['total_pages'] ?? 1,
+            'total_items' => $apiPagination['total'] ?? 0,
+            'per_page' => $apiPagination['limit'] ?? 20
+        ];
         
         $data = [
             'page_title' => 'Manajemen Penarikan Dana',
-            'withdrawal_list' => $response['data']['withdrawal'] ?? [],
+            'withdrawal_list' => $withdrawalList,
             'pagination' => $pagination,
             'error' => !$response['success'],
             'message' => $response['message'] ?? null,

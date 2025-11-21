@@ -65,37 +65,88 @@ class ApiService
             $method = strtoupper($method);
 
             if (!empty($files)) {
-                // Multipart form data (for file uploads)
-                $multipart = [];
+                // Use native PHP cURL for file uploads (more reliable)
+                $ch = curl_init($this->baseUrl . $endpoint);
                 
+                // Prepare multipart data
+                $postFields = [];
+                
+                // Add regular data
                 foreach ($data as $key => $value) {
-                    $multipart[] = [
-                        'name' => $key,
-                        'contents' => $value,
-                    ];
+                    $postFields[$key] = $value;
                 }
-
+                
+                // Add files
                 foreach ($files as $key => $file) {
                     if (is_array($file)) {
-                        // Multiple files
+                        // Multiple files (not commonly used)
                         foreach ($file as $f) {
-                            $multipart[] = [
-                                'name' => $key,
-                                'contents' => fopen($f->getTempName(), 'r'),
-                                'filename' => $f->getClientName(),
-                            ];
+                            $postFields[$key] = new \CURLFile($f->getTempName(), $f->getClientMimeType(), $f->getClientName());
                         }
                     } else {
                         // Single file
-                        $multipart[] = [
-                            'name' => $key,
-                            'contents' => fopen($file->getTempName(), 'r'),
-                            'filename' => $file->getClientName(),
-                        ];
+                        $postFields[$key] = new \CURLFile($file->getTempName(), $file->getClientMimeType(), $file->getClientName());
                     }
                 }
-
-                $options['multipart'] = $multipart;
+                
+                // Set cURL options
+                curl_setopt_array($ch, [
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_CUSTOMREQUEST => $method,
+                    CURLOPT_POSTFIELDS => $postFields,
+                    CURLOPT_HTTPHEADER => [
+                        'Authorization: Bearer ' . $this->token,
+                        'Accept: application/json',
+                    ],
+                    CURLOPT_TIMEOUT => 30,
+                ]);
+                
+                // Execute request
+                $body = curl_exec($ch);
+                $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                $error = curl_error($ch);
+                curl_close($ch);
+                
+                // Handle cURL errors
+                if ($body === false) {
+                    return [
+                        'success' => false,
+                        'status' => 'error',
+                        'message' => 'cURL Error: ' . $error,
+                        'http_code' => 500,
+                    ];
+                }
+                
+                $result = json_decode($body, true);
+                
+                // Handle empty or invalid JSON response
+                if ($result === null && json_last_error() !== JSON_ERROR_NONE) {
+                    return [
+                        'success' => false,
+                        'status' => 'error',
+                        'message' => 'Invalid JSON response from API',
+                        'http_code' => $statusCode,
+                        'raw_response' => $body,
+                    ];
+                }
+                
+                // Handle 401 Unauthorized
+                if ($statusCode === 401) {
+                    $session = session();
+                    $session->destroy();
+                    return [
+                        'success' => false,
+                        'status' => 'error',
+                        'message' => 'Session expired. Please login again.',
+                        'http_code' => 401,
+                        'redirect' => '/auth/login',
+                    ];
+                }
+                
+                $result['success'] = in_array($statusCode, [200, 201]);
+                $result['http_code'] = $statusCode;
+                
+                return $result;
             } elseif ($method === 'GET') {
                 // Query parameters for GET
                 if (!empty($data)) {
