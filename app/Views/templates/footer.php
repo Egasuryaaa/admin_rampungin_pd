@@ -20,19 +20,43 @@
     <!-- Initialize Bootstrap Components -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if Bootstrap is loaded
+            console.log('Bootstrap loaded:', typeof bootstrap !== 'undefined');
+            
             // Auto-dismiss alerts after 5 seconds
             setTimeout(function() {
                 const alerts = document.querySelectorAll('.alert:not(.alert-permanent)');
                 alerts.forEach(function(alert) {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
+                    if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    }
                 });
             }, 5000);
             
             // Initialize all tooltips
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
+            if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            }
+            
+            // Debug modal triggers
+            document.querySelectorAll('[data-bs-toggle="modal"]').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    console.log('Modal button clicked:', this.getAttribute('data-bs-target'));
+                });
+            });
+            
+            // Listen to modal events
+            document.querySelectorAll('.modal').forEach(function(modal) {
+                modal.addEventListener('show.bs.modal', function(e) {
+                    console.log('Modal showing:', this.id);
+                });
+                modal.addEventListener('shown.bs.modal', function(e) {
+                    console.log('Modal shown:', this.id);
+                });
             });
         });
     </script>

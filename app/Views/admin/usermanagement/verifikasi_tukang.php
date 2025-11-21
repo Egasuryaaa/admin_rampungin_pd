@@ -154,12 +154,13 @@
                 <?php endif; ?>
             </div>
         </div>
-        
-        <!-- Verification Modals Section -->
-        <?php if (!empty($tukang)): ?>
-            <?php foreach ($tukang as $t): ?>
-                <!-- Approve Modal -->
-                <div class="modal fade" id="approveModal<?= $t['id_user'] ?? $t['id'] ?>" tabindex="-1" aria-labelledby="approveModalLabel<?= $t['id_user'] ?? $t['id'] ?>" aria-hidden="true">
+    </main>
+    
+    <!-- Verification Modals Section -->
+    <?php if (!empty($tukang)): ?>
+        <?php foreach ($tukang as $t): ?>
+            <!-- Approve Modal -->
+            <div class="modal fade" id="approveModal<?= $t['id_user'] ?? $t['id'] ?>" tabindex="-1" aria-labelledby="approveModalLabel<?= $t['id_user'] ?? $t['id'] ?>" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <form action="<?= base_url('admin/users/verifications/tukang/' . ($t['id_user'] ?? $t['id'])) ?>" method="POST">
@@ -184,8 +185,8 @@
                     </div>
                 </div>
 
-                <!-- Reject Modal -->
-                <div class="modal fade" id="rejectModal<?= $t['id_user'] ?? $t['id'] ?>" tabindex="-1" aria-labelledby="rejectModalLabel<?= $t['id_user'] ?? $t['id'] ?>" aria-hidden="true">
+            <!-- Reject Modal -->
+            <div class="modal fade" id="rejectModal<?= $t['id_user'] ?? $t['id'] ?>" tabindex="-1" aria-labelledby="rejectModalLabel<?= $t['id_user'] ?? $t['id'] ?>" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <form action="<?= base_url('admin/users/verifications/tukang/' . ($t['id_user'] ?? $t['id'])) ?>" method="POST">
@@ -211,7 +212,7 @@
                         </div>
                     </div>
                 </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
 
 <?php include APPPATH . 'Views/templates/footer.php'; ?>

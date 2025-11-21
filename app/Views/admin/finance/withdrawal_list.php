@@ -125,13 +125,14 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Withdrawal Modals Section -->
-        <?php if (!empty($withdrawal_list)): ?>
-            <?php foreach ($withdrawal_list as $withdrawal): ?>
-                <?php if ($withdrawal['status'] == 'pending'): ?>
-                    <!-- Confirm Modal -->
-                    <div class="modal fade" id="confirmModal<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" tabindex="-1" aria-labelledby="confirmModalLabel<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" aria-hidden="true">
+    </main>
+    
+    <!-- Withdrawal Modals Section -->
+    <?php if (!empty($withdrawal_list)): ?>
+        <?php foreach ($withdrawal_list as $withdrawal): ?>
+            <?php if ($withdrawal['status'] == 'pending'): ?>
+                <!-- Confirm Modal -->
+                <div class="modal fade" id="confirmModal<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" tabindex="-1" aria-labelledby="confirmModalLabel<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <form action="<?= base_url('admin/finance/withdrawal/confirm/' . ($withdrawal['id_penarikan'] ?? $withdrawal['id'])) ?>" 
@@ -163,8 +164,8 @@
                         </div>
                     </div>
 
-                    <!-- Reject Modal -->
-                    <div class="modal fade" id="rejectModal<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" tabindex="-1" aria-labelledby="rejectModalLabel<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" aria-hidden="true">
+                <!-- Reject Modal -->
+                <div class="modal fade" id="rejectModal<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" tabindex="-1" aria-labelledby="rejectModalLabel<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <form action="<?= base_url('admin/finance/withdrawal/reject/' . ($withdrawal['id_penarikan'] ?? $withdrawal['id'])) ?>" method="POST">
@@ -191,8 +192,8 @@
                             </div>
                         </div>
                     </div>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        <?php endif; ?>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
 
 <?php include APPPATH . 'Views/templates/footer.php'; ?>

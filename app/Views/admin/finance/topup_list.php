@@ -141,12 +141,13 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Reject Modals Section -->
-        <?php if (!empty($topup_list)): ?>
-            <?php foreach ($topup_list as $topup): ?>
-                <?php if ($topup['status'] == 'pending'): ?>
-                    <div class="modal fade" id="rejectModal<?= $topup['id'] ?>" tabindex="-1" aria-labelledby="rejectModalLabel<?= $topup['id'] ?>" aria-hidden="true">
+    </main>
+    
+    <!-- Reject Modals Section -->
+    <?php if (!empty($topup_list)): ?>
+        <?php foreach ($topup_list as $topup): ?>
+            <?php if ($topup['status'] == 'pending'): ?>
+                <div class="modal fade" id="rejectModal<?= $topup['id'] ?>" tabindex="-1" aria-labelledby="rejectModalLabel<?= $topup['id'] ?>" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <form action="<?= base_url('admin/finance/topup/verify/' . $topup['id']) ?>" method="POST">
@@ -170,8 +171,8 @@
                             </div>
                         </div>
                     </div>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        <?php endif; ?>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
 
 <?php include APPPATH . 'Views/templates/footer.php'; ?>

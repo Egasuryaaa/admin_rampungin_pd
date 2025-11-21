@@ -17,6 +17,122 @@
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/daterangepicker.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css" />
+    <style>
+        /* Fix Modal CSS */
+        .modal {
+            z-index: 1055 !important;
+        }
+        .modal-backdrop {
+            z-index: 1050 !important;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-backdrop.fade {
+            opacity: 0;
+            transition: opacity 0.15s linear;
+        }
+        
+        .modal-backdrop.show {
+            opacity: 1;
+        }
+        .modal-dialog {
+            z-index: 1060 !important;
+            margin: 1.75rem auto;
+        }
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out;
+            transform: translate(0, -50px);
+        }
+        .modal.show .modal-dialog {
+            transform: none;
+        }
+        .modal-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            pointer-events: auto;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 0.3rem;
+            outline: 0;
+        }
+        .modal-header {
+            display: flex;
+            flex-shrink: 0;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1rem;
+            border-bottom: 1px solid #dee2e6;
+            border-top-left-radius: calc(0.3rem - 1px);
+            border-top-right-radius: calc(0.3rem - 1px);
+        }
+        .modal-title {
+            margin-bottom: 0;
+            line-height: 1.5;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+        .modal-body {
+            position: relative;
+            flex: 1 1 auto;
+            padding: 1rem;
+        }
+        .modal-footer {
+            display: flex;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0.75rem;
+            border-top: 1px solid #dee2e6;
+            border-bottom-right-radius: calc(0.3rem - 1px);
+            border-bottom-left-radius: calc(0.3rem - 1px);
+        }
+        .modal-footer > * {
+            margin: 0.25rem;
+        }
+        .btn-close {
+            box-sizing: content-box;
+            width: 1em;
+            height: 1em;
+            padding: 0.25em 0.25em;
+            color: #000;
+            background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+            border: 0;
+            border-radius: 0.25rem;
+            opacity: 0.5;
+        }
+        .btn-close:hover {
+            color: #000;
+            text-decoration: none;
+            opacity: 0.75;
+        }
+        .btn-close:focus {
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            opacity: 1;
+        }
+        body.modal-open {
+            overflow: hidden;
+            padding-right: 0 !important;
+        }
+        body.modal-open .modal {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        
+        /* Smooth modal animation */
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out, opacity 0.15s linear;
+            opacity: 0;
+        }
+        
+        .modal.show .modal-dialog {
+            opacity: 1;
+        }
+    </style>
 </head>
 
 <body>
