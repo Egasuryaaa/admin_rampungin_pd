@@ -94,7 +94,8 @@
                                                         </td>
                                                         <td>
                                                             <?php
-                                                            $role = $user['role'] ?? 'client';
+                                                            // Get role from roles object or direct role field
+                                                            $role = $user['roles']['name'] ?? $user['role'] ?? 'client';
                                                             $roleClass = [
                                                                 'admin' => 'danger',
                                                                 'tukang' => 'primary',
@@ -119,7 +120,14 @@
                                                             </span>
                                                         </td>
                                                         <td>
-                                                            <?php if ($isActive): ?>
+                                                            <?php 
+                                                            $role = $user['roles']['name'] ?? $user['role'] ?? 'client';
+                                                            $isAdmin = ($role === 'admin');
+                                                            ?>
+                                                            
+                                                            <?php if ($isAdmin): ?>
+                                                                <span class="badge bg-secondary">Protected</span>
+                                                            <?php elseif ($isActive): ?>
                                                                 <form action="<?= base_url('admin/users/ban/' . ($user['id_user'] ?? $user['id'])) ?>" 
                                                                       method="POST" class="d-inline" 
                                                                       onsubmit="return confirm('Yakin ingin memban user ini?')">
