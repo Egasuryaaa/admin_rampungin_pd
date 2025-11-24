@@ -74,8 +74,12 @@
                                                         <td><?= esc($user['id_user'] ?? $user['id']) ?></td>
                                                         <td>
                                                             <?php 
-                                                            $fotoUrl = $user['foto_profil'] ?? 'uploads/profiles/default.jpg';
-                                                            $fullFotoUrl = getenv('NODE_API_URL') . '/' . $fotoUrl;
+                                                            $fotoPath = $user['foto_profil'] ?? 'profiles/default.jpg';
+                                                            // Check if path already starts with 'uploads/', if not add it
+                                                            if (strpos($fotoPath, 'uploads/') !== 0) {
+                                                                $fotoPath = 'uploads/' . $fotoPath;
+                                                            }
+                                                            $fullFotoUrl = getenv('NODE_API_URL') . '/' . $fotoPath;
                                                             ?>
                                                             <img src="<?= $fullFotoUrl ?>" 
                                                                  alt="Foto Profil" 
@@ -185,21 +189,22 @@
                 </div>
             </div>
         </div>
+    </main>
 
-        <!-- Modal Foto Profil -->
-        <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="photoModalLabel">Foto Profil</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <img id="modalPhotoImage" src="" alt="Foto Profil" class="img-fluid" style="max-height: 70vh; object-fit: contain;">
-                    </div>
+    <!-- Modal Foto Profil -->
+    <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="photoModalLabel">Foto Profil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalPhotoImage" src="" alt="Foto Profil" class="img-fluid" style="max-height: 70vh; object-fit: contain;">
                 </div>
             </div>
         </div>
+    </div>
 
 <?php include APPPATH . 'Views/templates/footer.php'; ?>
 
@@ -214,9 +219,15 @@
     });
 
     function showPhotoModal(photoUrl, userName) {
+        console.log('Opening photo modal:', photoUrl);
         document.getElementById('photoModalLabel').textContent = 'Foto Profil - ' + userName;
         document.getElementById('modalPhotoImage').src = photoUrl;
-        var photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
+        
+        var photoModal = new bootstrap.Modal(document.getElementById('photoModal'), {
+            backdrop: true,
+            keyboard: true,
+            focus: true
+        });
         photoModal.show();
     }
 </script>
