@@ -117,6 +117,11 @@
                                                             ][$status] ?? ucfirst($status);
                                                             ?>
                                                             <span class="badge bg-<?= $badgeClass ?>"><?= $statusLabel ?></span>
+                                                            <?php if ($status == 'ditolak' && !empty($withdrawal['alasan_penolakan'])): ?>
+                                                                <br><small class="text-danger">
+                                                                    <i class="feather-alert-circle"></i> <?= esc($withdrawal['alasan_penolakan']) ?>
+                                                                </small>
+                                                            <?php endif; ?>
                                                         </td>
                                                         <td><?= date('d M Y H:i', strtotime($withdrawal['tanggal_penarikan'] ?? 'now')) ?></td>
                                                         <td>

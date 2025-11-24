@@ -119,6 +119,11 @@
                                                             }
                                                         ?>
                                                         <span class="badge bg-<?= $badgeClass ?>"><?= $statusLabel ?></span>
+                                                        <?php if ($status == 'ditolak' && !empty($topup['alasan_penolakan'])): ?>
+                                                            <br><small class="text-danger">
+                                                                <i class="feather-alert-circle"></i> <?= esc($topup['alasan_penolakan']) ?>
+                                                            </small>
+                                                        <?php endif; ?>
                                                     </td>
                                                     <td><?= date('d M Y H:i', strtotime($topup['created_at'])) ?></td>
                                                     <td>
