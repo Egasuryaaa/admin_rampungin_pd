@@ -83,7 +83,7 @@
                                                 <th>Status</th>
                                                 <th>Tanggal Dibuat</th>
                                                 <th>Diverifikasi Oleh</th>
-                                                <th>Bukti</th>
+                                                <th>Bukti Pembayaran</th>
                                                 <th class="text-end">Aksi</th>
                                             </tr>
                                         </thead>
@@ -133,9 +133,34 @@
                                                     </td>
                                                     <td>
                                                         <?php if (!empty($topup['bukti_pembayaran'])): ?>
-                                                            <a href="<?= base_url($topup['bukti_pembayaran']) ?>" target="_blank" class="btn btn-sm btn-light-brand">
-                                                                <i class="feather-file-text"></i> Lihat
-                                                            </a>
+                                                            <?php 
+                                                            // Check if path already starts with 'uploads/', if not add it
+                                                            $buktiPath = $topup['bukti_pembayaran'];
+                                                            if (strpos($buktiPath, 'uploads/') !== 0) {
+                                                                $buktiPath = 'uploads/' . $buktiPath;
+                                                            }
+                                                            $buktiUrl = getenv('NODE_API_URL') . '/' . $buktiPath;
+                                                            $isImage = preg_match('/\\.(jpg|jpeg|png|gif)$/i', $topup['bukti_pembayaran']);
+                                                            $isPdf = preg_match('/\\.pdf$/i', $topup['bukti_pembayaran']);
+                                                            ?>
+                                                            <?php if ($isImage): ?>
+                                                                <img src="<?= $buktiUrl ?>" 
+                                                                     alt="Bukti Pembayaran" 
+                                                                     style="width: 60px; height: 60px; object-fit: cover; cursor: pointer; border-radius: 4px;"
+                                                                     onclick="showBuktiModal('<?= $buktiUrl ?>', 'image', 'Topup #<?= $topup['id'] ?>')"
+                                                                     onerror="this.onerror=null; this.src='<?= base_url('assets/images/placeholder.png') ?>'; this.style.opacity='0.5';"
+                                                                     title="<?= $buktiUrl ?>">
+                                                            <?php elseif ($isPdf): ?>
+                                                                <button type="button" class="btn btn-sm btn-light-brand" 
+                                                                        onclick="showBuktiModal('<?= $buktiUrl ?>', 'pdf', 'Topup #<?= $topup['id'] ?>')"
+                                                                        title="<?= $buktiUrl ?>">
+                                                                    <i class="feather-file-text"></i> Lihat PDF
+                                                                </button>
+                                                            <?php else: ?>
+                                                                <a href="<?= $buktiUrl ?>" target="_blank" class="btn btn-sm btn-light-brand" title="<?= $buktiUrl ?>">
+                                                                    <i class="feather-file-text"></i> Lihat
+                                                                </a>
+                                                            <?php endif; ?>
                                                         <?php else: ?>
                                                             <span class="text-muted">-</span>
                                                         <?php endif; ?>
@@ -162,7 +187,7 @@
                                                 <?php endforeach; ?>
                                             <?php else: ?>
                                                 <tr>
-                                                    <td colspan="8" class="text-center py-5">
+                                                    <td colspan="9" class="text-center py-5">
                                                         <div class="text-muted">
                                                             <i class="feather-inbox fs-1 mb-3"></i>
                                                             <p class="mb-0">Tidak ada data top-up.</p>
@@ -248,4 +273,53 @@
         <?php endforeach; ?>
     <?php endif; ?>
 
+    <!-- Modal Bukti Pembayaran -->
+    <div class="modal fade" id="buktiModal" tabindex="-1" aria-labelledby="buktiModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="buktiModalLabel">Bukti Pembayaran</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalBuktiImage" src="" alt="Bukti Pembayaran" class="img-fluid" style="max-height: 70vh; object-fit: contain; display: none;">
+                    <iframe id="modalBuktiPdf" src="" style="width: 100%; height: 70vh; border: none; display: none;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <?php include APPPATH . 'Views/templates/footer.php'; ?>
+
+<script>
+    function showBuktiModal(buktiUrl, type, transactionInfo) {
+        console.log('Opening bukti modal:', {buktiUrl, type, transactionInfo});
+        
+        document.getElementById('buktiModalLabel').textContent = 'Bukti Pembayaran - ' + transactionInfo;
+        
+        const imageElement = document.getElementById('modalBuktiImage');
+        const pdfElement = document.getElementById('modalBuktiPdf');
+        
+        if (type === 'image') {
+            imageElement.src = buktiUrl;
+            imageElement.style.display = 'block';
+            pdfElement.style.display = 'none';
+            
+            // Add error handler for image
+            imageElement.onerror = function() {
+                console.error('Failed to load image:', buktiUrl);
+                alert('Gagal memuat gambar. URL: ' + buktiUrl + '\n\nPastikan:\n1. File ada di server Node.js\n2. NODE_API_URL dikonfigurasi dengan benar\n3. Tidak ada masalah CORS');
+            };
+        } else if (type === 'pdf') {
+            pdfElement.src = buktiUrl;
+            pdfElement.style.display = 'block';
+            imageElement.style.display = 'none';
+        }
+        
+        var buktiModal = new bootstrap.Modal(document.getElementById('buktiModal'));
+        buktiModal.show();
+    }
+    
+    // Log NODE_API_URL for debugging
+    console.log('NODE_API_URL:', '<?= getenv("NODE_API_URL") ?>');
+</script>

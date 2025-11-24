@@ -56,6 +56,7 @@
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
+                                                <th>Foto</th>
                                                 <th>User</th>
                                                 <th>Role</th>
                                                 <th>No Telp</th>
@@ -71,6 +72,17 @@
                                                 <?php foreach ($users as $user): ?>
                                                     <tr>
                                                         <td><?= esc($user['id_user'] ?? $user['id']) ?></td>
+                                                        <td>
+                                                            <?php 
+                                                            $fotoUrl = $user['foto_profil'] ?? 'uploads/profiles/default.jpg';
+                                                            $fullFotoUrl = getenv('NODE_API_URL') . '/' . $fotoUrl;
+                                                            ?>
+                                                            <img src="<?= $fullFotoUrl ?>" 
+                                                                 alt="Foto Profil" 
+                                                                 class="rounded-circle" 
+                                                                 style="width: 50px; height: 50px; object-fit: cover; cursor: pointer;"
+                                                                 onclick="showPhotoModal('<?= $fullFotoUrl ?>', '<?= esc($user['nama_lengkap'] ?? 'User') ?>')">
+                                                        </td>
                                                         <td>
                                                             <strong><?= esc($user['nama_lengkap'] ?? 'N/A') ?></strong><br>
                                                             <small class="text-muted"><?= esc($user['email'] ?? '') ?></small><br>
@@ -122,16 +134,12 @@
                                                                     </button>
                                                                 </form>
                                                             <?php endif; ?>
-                                                            <a href="<?= base_url('admin/users/detail/' . ($user['id_user'] ?? $user['id'])) ?>" 
-                                                               class="btn btn-sm btn-info" title="Detail User">
-                                                                <i class="feather-eye"></i>
-                                                            </a>
                                                         </td>
                                                     </tr>
                                                 <?php endforeach; ?>
                                             <?php else: ?>
                                                 <tr>
-                                                    <td colspan="9" class="text-center">Tidak ada data user</td>
+                                                    <td colspan="10" class="text-center">Tidak ada data user</td>
                                                 </tr>
                                             <?php endif; ?>
                                         </tbody>
@@ -178,6 +186,21 @@
             </div>
         </div>
 
+        <!-- Modal Foto Profil -->
+        <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="photoModalLabel">Foto Profil</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img id="modalPhotoImage" src="" alt="Foto Profil" class="img-fluid" style="max-height: 70vh; object-fit: contain;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
 <?php include APPPATH . 'Views/templates/footer.php'; ?>
 
 <script>
@@ -189,4 +212,11 @@
             "info": false
         });
     });
+
+    function showPhotoModal(photoUrl, userName) {
+        document.getElementById('photoModalLabel').textContent = 'Foto Profil - ' + userName;
+        document.getElementById('modalPhotoImage').src = photoUrl;
+        var photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
+        photoModal.show();
+    }
 </script>
