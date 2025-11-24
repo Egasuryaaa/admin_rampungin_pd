@@ -32,6 +32,36 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card stretch stretch-full">
+                            <!-- Filter Status Tabs -->
+                            <div class="card-header">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link <?= ($current_status ?? 'pending') === 'pending' ? 'active' : '' ?>" 
+                                           href="<?= base_url('admin/finance/withdrawal?status=pending') ?>">
+                                            <i class="feather-clock"></i> Pending
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link <?= ($current_status ?? '') === 'diproses' ? 'active' : '' ?>" 
+                                           href="<?= base_url('admin/finance/withdrawal?status=diproses') ?>">
+                                            <i class="feather-loader"></i> Diproses
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link <?= ($current_status ?? '') === 'selesai' ? 'active' : '' ?>" 
+                                           href="<?= base_url('admin/finance/withdrawal?status=selesai') ?>">
+                                            <i class="feather-check-circle"></i> Selesai
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link <?= ($current_status ?? '') === 'ditolak' ? 'active' : '' ?>" 
+                                           href="<?= base_url('admin/finance/withdrawal?status=ditolak') ?>">
+                                            <i class="feather-x-circle"></i> Ditolak
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            
                             <div class="card-body custom-card-action p-0">
                                 <div class="table-responsive">
                                     <table class="table table-hover" id="withdrawalTable">
@@ -45,6 +75,8 @@
                                                 <th>Nama Pemilik</th>
                                                 <th>Status</th>
                                                 <th>Tanggal</th>
+                                                <th>Diproses Oleh</th>
+                                                <th>Bukti Transfer</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -66,13 +98,51 @@
                                                             $status = $withdrawal['status'] ?? 'pending';
                                                             $badgeClass = [
                                                                 'pending' => 'warning',
+                                                                'diproses' => 'info',
+                                                                'selesai' => 'success',
+                                                                'ditolak' => 'danger',
+                                                                // Legacy support
                                                                 'confirmed' => 'success',
                                                                 'rejected' => 'danger'
                                                             ][$status] ?? 'secondary';
+                                                            
+                                                            $statusLabel = [
+                                                                'pending' => 'Pending',
+                                                                'diproses' => 'Diproses',
+                                                                'selesai' => 'Selesai',
+                                                                'ditolak' => 'Ditolak',
+                                                                // Legacy support
+                                                                'confirmed' => 'Selesai',
+                                                                'rejected' => 'Ditolak'
+                                                            ][$status] ?? ucfirst($status);
                                                             ?>
-                                                            <span class="badge bg-<?= $badgeClass ?>"><?= ucfirst($status) ?></span>
+                                                            <span class="badge bg-<?= $badgeClass ?>"><?= $statusLabel ?></span>
                                                         </td>
                                                         <td><?= date('d M Y H:i', strtotime($withdrawal['tanggal_penarikan'] ?? 'now')) ?></td>
+                                                        <td>
+                                                            <?php if (!empty($withdrawal['users_penarikan_diproses_olehTousers'])): ?>
+                                                                <small class="text-muted">
+                                                                    <?= esc($withdrawal['users_penarikan_diproses_olehTousers']['nama_lengkap'] ?? 'Admin') ?><br>
+                                                                    <span class="badge bg-secondary">ID: <?= esc($withdrawal['users_penarikan_diproses_olehTousers']['id']) ?></span><br>
+                                                                    <?php if (!empty($withdrawal['waktu_diproses'])): ?>
+                                                                        <?= date('d M Y H:i', strtotime($withdrawal['waktu_diproses'])) ?>
+                                                                    <?php endif; ?>
+                                                                </small>
+                                                            <?php else: ?>
+                                                                <span class="text-muted">-</span>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php if (!empty($withdrawal['bukti_transfer'])): ?>
+                                                                <button type="button" class="btn btn-sm btn-info" 
+                                                                        data-bs-toggle="modal" 
+                                                                        data-bs-target="#buktiModal<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>">
+                                                                    <i class="feather-image"></i> Lihat Bukti
+                                                                </button>
+                                                            <?php else: ?>
+                                                                <span class="text-muted">-</span>
+                                                            <?php endif; ?>
+                                                        </td>
                                                         <td>
                                                             <?php if ($status === 'pending'): ?>
                                                                 <button type="button" class="btn btn-sm btn-success" 
@@ -93,7 +163,7 @@
                                                 <?php endforeach; ?>
                                             <?php else: ?>
                                                 <tr>
-                                                    <td colspan="9" class="text-center">Tidak ada data penarikan</td>
+                                                    <td colspan="11" class="text-center">Tidak ada data penarikan</td>
                                                 </tr>
                                             <?php endif; ?>
                                         </tbody>
@@ -105,15 +175,15 @@
                                     <nav aria-label="Page navigation">
                                         <ul class="pagination justify-content-center mb-0">
                                             <li class="page-item <?= ($pagination['current_page'] <= 1) ? 'disabled' : '' ?>">
-                                                <a class="page-link" href="?page=<?= $pagination['current_page'] - 1 ?>">Previous</a>
+                                                <a class="page-link" href="?status=<?= esc($current_status ?? 'pending') ?>&page=<?= $pagination['current_page'] - 1 ?>">Previous</a>
                                             </li>
                                             <?php for ($i = 1; $i <= $pagination['total_pages']; $i++): ?>
                                                 <li class="page-item <?= ($i == $pagination['current_page']) ? 'active' : '' ?>">
-                                                    <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                                                    <a class="page-link" href="?status=<?= esc($current_status ?? 'pending') ?>&page=<?= $i ?>"><?= $i ?></a>
                                                 </li>
                                             <?php endfor; ?>
                                             <li class="page-item <?= ($pagination['current_page'] >= $pagination['total_pages']) ? 'disabled' : '' ?>">
-                                                <a class="page-link" href="?page=<?= $pagination['current_page'] + 1 ?>">Next</a>
+                                                <a class="page-link" href="?status=<?= esc($current_status ?? 'pending') ?>&page=<?= $pagination['current_page'] + 1 ?>">Next</a>
                                             </li>
                                         </ul>
                                     </nav>
@@ -126,6 +196,48 @@
             </div>
         </div>
     </main>
+    
+    <!-- Bukti Transfer Modals -->
+    <?php if (!empty($withdrawal_list)): ?>
+        <?php foreach ($withdrawal_list as $withdrawal): ?>
+            <?php if (!empty($withdrawal['bukti_transfer'])): ?>
+                <div class="modal fade" id="buktiModal<?= $withdrawal['id_penarikan'] ?? $withdrawal['id'] ?>" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Bukti Transfer - <?= esc($withdrawal['nama_pemilik_rekening']) ?></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <div class="mb-3">
+                                    <p><strong>Bank:</strong> <?= esc($withdrawal['nama_bank']) ?></p>
+                                    <p><strong>No Rekening:</strong> <?= esc($withdrawal['nomor_rekening']) ?></p>
+                                    <p><strong>Jumlah Transfer:</strong> Rp <?= number_format($withdrawal['jumlah_bersih'] ?? 0, 0, ',', '.') ?></p>
+                                </div>
+                                <?php 
+                                $buktiPath = $withdrawal['bukti_transfer'];
+                                $apiUrl = getenv('NODE_API_URL') ?: 'http://localhost:3000';
+                                $buktiUrl = rtrim($apiUrl, '/') . '/' . ltrim($buktiPath, '/');
+                                $isPdf = strtolower(pathinfo($buktiPath, PATHINFO_EXTENSION)) === 'pdf';
+                                ?>
+                                <?php if ($isPdf): ?>
+                                    <iframe src="<?= esc($buktiUrl) ?>" width="100%" height="600px" style="border: none;"></iframe>
+                                <?php else: ?>
+                                    <img src="<?= esc($buktiUrl) ?>" alt="Bukti Transfer" class="img-fluid" style="max-height: 600px;">
+                                <?php endif; ?>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="<?= esc($buktiUrl) ?>" target="_blank" class="btn btn-primary">
+                                    <i class="feather-download"></i> Download Bukti
+                                </a>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
     
     <!-- Withdrawal Modals Section -->
     <?php if (!empty($withdrawal_list)): ?>

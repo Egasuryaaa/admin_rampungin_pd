@@ -21,17 +21,19 @@ class FinanceController extends BaseController
      */
 
     /**
-     * Display list of pending topup requests
+     * Display list of topup requests with optional status filter
      */
     public function topup()
     {
         $page = $this->request->getGet('page') ?? 1;
         $limit = $this->request->getGet('limit') ?? 20;
+        $status = $this->request->getGet('status') ?? 'pending'; // Default to pending
 
-        // Fetch pending topup from API
+        // Fetch topup from API with status filter
         $response = $this->apiService->get('/api/admin/finance/topup', [
             'page' => $page,
             'limit' => $limit,
+            'status' => $status,
         ]);
 
         // Check for errors
@@ -45,6 +47,7 @@ class FinanceController extends BaseController
             'page_title' => 'Manajemen Top-Up',
             'topup_list' => $response['data']['topup'] ?? [],
             'pagination' => $response['data']['pagination'] ?? null,
+            'current_status' => $status,
             'error' => !$response['success'],
             'message' => $response['message'] ?? null,
         ];
@@ -111,17 +114,19 @@ class FinanceController extends BaseController
      */
 
     /**
-     * Display list of pending withdrawal requests
+     * Display list of withdrawal requests with optional status filter
      */
     public function withdrawal()
     {
         $page = $this->request->getGet('page') ?? 1;
         $limit = $this->request->getGet('limit') ?? 20;
+        $status = $this->request->getGet('status') ?? 'pending'; // Default to pending
 
-        // Fetch pending withdrawal from API
+        // Fetch withdrawal from API with status filter
         $response = $this->apiService->get('/api/admin/finance/withdrawal', [
             'page' => $page,
             'limit' => $limit,
+            'status' => $status,
         ]);
 
         // Check for errors
@@ -149,12 +154,15 @@ class FinanceController extends BaseController
                     'alasan_penolakan' => $item['alasan_penolakan'],
                     'tanggal_penarikan' => $item['created_at'],
                     'created_at' => $item['created_at'],
+                    'diproses_oleh' => $item['diproses_oleh'],
+                    'waktu_diproses' => $item['waktu_diproses'],
                     'user' => [
                         'id' => $item['users_penarikan_tukang_idTousers']['id'],
                         'nama_lengkap' => $item['users_penarikan_tukang_idTousers']['nama_lengkap'],
                         'email' => $item['users_penarikan_tukang_idTousers']['email'],
                         'poin' => $item['users_penarikan_tukang_idTousers']['poin'],
-                    ]
+                    ],
+                    'users_penarikan_diproses_olehTousers' => $item['users_penarikan_diproses_olehTousers']
                 ];
             }
         }
@@ -172,6 +180,7 @@ class FinanceController extends BaseController
             'page_title' => 'Manajemen Penarikan Dana',
             'withdrawal_list' => $withdrawalList,
             'pagination' => $pagination,
+            'current_status' => $status,
             'error' => !$response['success'],
             'message' => $response['message'] ?? null,
         ];

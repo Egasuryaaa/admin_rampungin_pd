@@ -45,13 +45,20 @@ class TransactionController extends BaseController
 
         // Prepare data for view
         $pagination = $response['data']['pagination'] ?? null;
-        if (!$pagination || !isset($pagination['current_page'])) {
+        if (!$pagination || !isset($pagination['page'])) {
             $pagination = [
                 'current_page' => 1,
                 'total_pages' => 1,
-                'total_items' => 0,
                 'total' => 0,
                 'per_page' => 20
+            ];
+        } else {
+            // Map API pagination to view format
+            $pagination = [
+                'current_page' => $pagination['page'] ?? 1,
+                'total_pages' => $pagination['total_pages'] ?? 1,
+                'total' => $pagination['total'] ?? 0,
+                'per_page' => $pagination['limit'] ?? 20
             ];
         }
         

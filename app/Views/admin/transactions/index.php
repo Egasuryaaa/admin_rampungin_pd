@@ -39,10 +39,11 @@
                                             <label class="form-label">Status</label>
                                             <select name="status" class="form-select">
                                                 <option value="">Semua Status</option>
-                                                <option value="menunggu_pembayaran" <?= (isset($_GET['status']) && $_GET['status'] === 'menunggu_pembayaran') ? 'selected' : '' ?>>Menunggu Pembayaran</option>
-                                                <option value="dibayar" <?= (isset($_GET['status']) && $_GET['status'] === 'dibayar') ? 'selected' : '' ?>>Dibayar</option>
-                                                <option value="diproses" <?= (isset($_GET['status']) && $_GET['status'] === 'diproses') ? 'selected' : '' ?>>Diproses</option>
+                                                <option value="pending" <?= (isset($_GET['status']) && $_GET['status'] === 'pending') ? 'selected' : '' ?>>Pending</option>
+                                                <option value="diterima" <?= (isset($_GET['status']) && $_GET['status'] === 'diterima') ? 'selected' : '' ?>>Diterima</option>
+                                                <option value="dalam_proses" <?= (isset($_GET['status']) && $_GET['status'] === 'dalam_proses') ? 'selected' : '' ?>>Dalam Proses</option>
                                                 <option value="selesai" <?= (isset($_GET['status']) && $_GET['status'] === 'selesai') ? 'selected' : '' ?>>Selesai</option>
+                                                <option value="ditolak" <?= (isset($_GET['status']) && $_GET['status'] === 'ditolak') ? 'selected' : '' ?>>Ditolak</option>
                                                 <option value="dibatalkan" <?= (isset($_GET['status']) && $_GET['status'] === 'dibatalkan') ? 'selected' : '' ?>>Dibatalkan</option>
                                             </select>
                                         </div>
@@ -50,9 +51,8 @@
                                             <label class="form-label">Metode Pembayaran</label>
                                             <select name="metode_pembayaran" class="form-select">
                                                 <option value="">Semua Metode</option>
-                                                <option value="poin" <?= (isset($_GET['metode_pembayaran']) && $_GET['metode_pembayaran'] === 'poin') ? 'selected' : '' ?>>Poin</option>
-                                                <option value="transfer_bank" <?= (isset($_GET['metode_pembayaran']) && $_GET['metode_pembayaran'] === 'transfer_bank') ? 'selected' : '' ?>>Transfer Bank</option>
-                                                <option value="e-wallet" <?= (isset($_GET['metode_pembayaran']) && $_GET['metode_pembayaran'] === 'e-wallet') ? 'selected' : '' ?>>E-Wallet</option>
+                                                <option value="POIN" <?= (isset($_GET['metode_pembayaran']) && $_GET['metode_pembayaran'] === 'POIN') ? 'selected' : '' ?>>Poin</option>
+                                                <option value="TUNAI" <?= (isset($_GET['metode_pembayaran']) && $_GET['metode_pembayaran'] === 'TUNAI') ? 'selected' : '' ?>>Tunai</option>
                                             </select>
                                         </div>
                                         <div class="col-md-2">
@@ -108,8 +108,6 @@
                                                 <th>Lokasi</th>
                                                 <th>Total Biaya</th>
                                                 <th>Metode</th>
-                                                <th>Status</th>
-                                                <th>Rating</th>
                                                 <th>Tanggal</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -120,15 +118,29 @@
                                                     <tr>
                                                         <td><strong><?= esc($trx['nomor_pesanan'] ?? 'N/A') ?></strong></td>
                                                         <td>
-                                                            <small><?= esc($trx['client']['nama_lengkap'] ?? 'N/A') ?></small>
+                                                            <?php if (!empty($trx['users_transaksi_client_idTousers'])): ?>
+                                                                <strong><?= esc($trx['users_transaksi_client_idTousers']['nama_lengkap'] ?? 'N/A') ?></strong><br>
+                                                                <small class="text-muted"><?= esc($trx['users_transaksi_client_idTousers']['username'] ?? '') ?></small>
+                                                            <?php else: ?>
+                                                                <span class="text-muted">N/A</span>
+                                                            <?php endif; ?>
                                                         </td>
                                                         <td>
-                                                            <small><?= esc($trx['tukang']['nama_lengkap'] ?? 'N/A') ?></small>
+                                                            <?php if (!empty($trx['users_transaksi_tukang_idTousers'])): ?>
+                                                                <strong><?= esc($trx['users_transaksi_tukang_idTousers']['nama_lengkap'] ?? 'N/A') ?></strong><br>
+                                                                <small class="text-muted"><?= esc($trx['users_transaksi_tukang_idTousers']['username'] ?? '') ?></small>
+                                                            <?php else: ?>
+                                                                <span class="text-muted">N/A</span>
+                                                            <?php endif; ?>
                                                         </td>
                                                         <td>
-                                                            <span class="badge bg-secondary">
-                                                                <?= esc($trx['kategori']['nama'] ?? 'N/A') ?>
-                                                            </span>
+                                                            <?php if (!empty($trx['kategori'])): ?>
+                                                                <span class="badge bg-secondary">
+                                                                    <?= esc($trx['kategori']['nama'] ?? 'N/A') ?>
+                                                                </span>
+                                                            <?php else: ?>
+                                                                <span class="text-muted">N/A</span>
+                                                            <?php endif; ?>
                                                         </td>
                                                         <td><?= esc($trx['judul_layanan'] ?? '-') ?></td>
                                                         <td>
@@ -137,45 +149,19 @@
                                                         <td><strong>Rp <?= number_format($trx['total_biaya'] ?? 0, 0, ',', '.') ?></strong></td>
                                                         <td>
                                                             <?php
-                                                            $metode = $trx['metode_pembayaran'] ?? 'N/A';
+                                                            $metode = strtoupper($trx['metode_pembayaran'] ?? 'N/A');
                                                             $metodeBadge = [
-                                                                'poin' => 'primary',
-                                                                'transfer_bank' => 'info',
-                                                                'e-wallet' => 'warning'
+                                                                'POIN' => 'primary',
+                                                                'TUNAI' => 'success'
                                                             ][$metode] ?? 'secondary';
                                                             ?>
                                                             <span class="badge bg-<?= $metodeBadge ?>">
-                                                                <?= ucwords(str_replace('_', ' ', $metode)) ?>
+                                                                <?= $metode ?>
                                                             </span>
                                                         </td>
+                                                        <td><small><?= date('d M Y', strtotime($trx['created_at'] ?? 'now')) ?></small></td>
                                                         <td>
-                                                            <?php
-                                                            $status = $trx['status'] ?? 'N/A';
-                                                            $statusBadge = [
-                                                                'menunggu_pembayaran' => 'warning',
-                                                                'dibayar' => 'info',
-                                                                'diproses' => 'primary',
-                                                                'selesai' => 'success',
-                                                                'dibatalkan' => 'danger'
-                                                            ][$status] ?? 'secondary';
-                                                            ?>
-                                                            <span class="badge bg-<?= $statusBadge ?>">
-                                                                <?= ucwords(str_replace('_', ' ', $status)) ?>
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <?php if (!empty($trx['rating']) && is_numeric($trx['rating'])): ?>
-                                                                <div class="d-flex align-items-center">
-                                                                    <i class="feather-star text-warning me-1"></i>
-                                                                    <strong><?= number_format((float)$trx['rating'], 1) ?></strong>
-                                                                </div>
-                                                            <?php else: ?>
-                                                                <span class="text-muted">-</span>
-                                                            <?php endif; ?>
-                                                        </td>
-                                                        <td><small><?= date('d M Y', strtotime($trx['tanggal_pesanan'] ?? 'now')) ?></small></td>
-                                                        <td>
-                                                            <a href="<?= base_url('admin/transactions/detail/' . ($trx['id_pesanan'] ?? $trx['id'])) ?>" 
+                                                            <a href="<?= base_url('admin/transactions/detail/' . ($trx['id'])) ?>" 
                                                                class="btn btn-sm btn-info" title="Detail Transaksi">
                                                                 <i class="feather-eye"></i>
                                                             </a>
@@ -184,7 +170,7 @@
                                                 <?php endforeach; ?>
                                             <?php else: ?>
                                                 <tr>
-                                                    <td colspan="12" class="text-center">Tidak ada data transaksi</td>
+                                                    <td colspan="10" class="text-center">Tidak ada data transaksi</td>
                                                 </tr>
                                             <?php endif; ?>
                                         </tbody>
@@ -237,7 +223,7 @@
             "searching": true,
             "ordering": true,
             "info": false,
-            "order": [[10, "desc"]]
+            "order": [[8, "desc"]] // Sort by date column (index 8)
         });
     });
 </script>

@@ -19,6 +19,36 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card stretch stretch-full">
+                            <!-- Filter Status Tabs -->
+                            <div class="card-header">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link <?= ($current_status ?? 'pending') === 'pending' ? 'active' : '' ?>" 
+                                           href="<?= base_url('admin/finance/topup?status=pending') ?>">
+                                            <i class="feather-clock"></i> Pending
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link <?= ($current_status ?? '') === 'berhasil' ? 'active' : '' ?>" 
+                                           href="<?= base_url('admin/finance/topup?status=berhasil') ?>">
+                                            <i class="feather-check-circle"></i> Berhasil
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link <?= ($current_status ?? '') === 'ditolak' ? 'active' : '' ?>" 
+                                           href="<?= base_url('admin/finance/topup?status=ditolak') ?>">
+                                            <i class="feather-x-circle"></i> Ditolak
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link <?= ($current_status ?? '') === 'kadaluarsa' ? 'active' : '' ?>" 
+                                           href="<?= base_url('admin/finance/topup?status=kadaluarsa') ?>">
+                                            <i class="feather-clock"></i> Kadaluarsa
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            
                             <div class="card-body p-0">
                                 <!-- Flash Messages -->
                                 <?php if (session()->getFlashdata('success')): ?>
@@ -51,7 +81,8 @@
                                                 <th>Jumlah</th>
                                                 <th>Metode</th>
                                                 <th>Status</th>
-                                                <th>Tanggal</th>
+                                                <th>Tanggal Dibuat</th>
+                                                <th>Diverifikasi Oleh</th>
                                                 <th>Bukti</th>
                                                 <th class="text-end">Aksi</th>
                                             </tr>
@@ -71,13 +102,35 @@
                                                         <?php
                                                             $status = $topup['status'];
                                                             $badgeClass = 'secondary';
-                                                            if ($status == 'pending') $badgeClass = 'warning';
-                                                            if ($status == 'berhasil') $badgeClass = 'success';
-                                                            if ($status == 'ditolak') $badgeClass = 'danger';
+                                                            $statusLabel = ucfirst($status);
+                                                            
+                                                            if ($status == 'pending') {
+                                                                $badgeClass = 'warning';
+                                                                $statusLabel = 'Pending';
+                                                            } elseif ($status == 'berhasil') {
+                                                                $badgeClass = 'success';
+                                                                $statusLabel = 'Berhasil';
+                                                            } elseif ($status == 'ditolak') {
+                                                                $badgeClass = 'danger';
+                                                                $statusLabel = 'Ditolak';
+                                                            } elseif ($status == 'kadaluarsa') {
+                                                                $badgeClass = 'secondary';
+                                                                $statusLabel = 'Kadaluarsa';
+                                                            }
                                                         ?>
-                                                        <span class="badge bg-<?= $badgeClass ?>"><?= esc(ucfirst($status)) ?></span>
+                                                        <span class="badge bg-<?= $badgeClass ?>"><?= $statusLabel ?></span>
                                                     </td>
                                                     <td><?= date('d M Y H:i', strtotime($topup['created_at'])) ?></td>
+                                                    <td>
+                                                        <?php if (!empty($topup['diverifikasi_oleh']) && !empty($topup['waktu_verifikasi'])): ?>
+                                                            <small class="text-muted">
+                                                                Admin ID: <?= esc($topup['diverifikasi_oleh']) ?><br>
+                                                                <?= date('d M Y H:i', strtotime($topup['waktu_verifikasi'])) ?>
+                                                            </small>
+                                                        <?php else: ?>
+                                                            <span class="text-muted">-</span>
+                                                        <?php endif; ?>
+                                                    </td>
                                                     <td>
                                                         <?php if (!empty($topup['bukti_pembayaran'])): ?>
                                                             <a href="<?= base_url($topup['bukti_pembayaran']) ?>" target="_blank" class="btn btn-sm btn-light-brand">
@@ -128,7 +181,7 @@
                                         <ul class="pagination justify-content-center mb-0">
                                             <?php for ($i = 1; $i <= $pagination['total_pages']; $i++): ?>
                                                 <li class="page-item <?= $i == $pagination['page'] ? 'active' : '' ?>">
-                                                    <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                                                    <a class="page-link" href="?status=<?= esc($current_status ?? 'pending') ?>&page=<?= $i ?>"><?= $i ?></a>
                                                 </li>
                                             <?php endfor; ?>
                                         </ul>
