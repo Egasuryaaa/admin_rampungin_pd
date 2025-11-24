@@ -179,11 +179,31 @@
                                 <div class="card-footer">
                                     <nav>
                                         <ul class="pagination justify-content-center mb-0">
+                                            <?php if ($pagination['page'] > 1): ?>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?status=<?= esc($current_status ?? 'pending') ?>&page=<?= $pagination['page'] - 1 ?>">Previous</a>
+                                                </li>
+                                            <?php else: ?>
+                                                <li class="page-item disabled">
+                                                    <span class="page-link" style="color: #6c757d; background-color: #fff; border-color: #dee2e6;">Previous</span>
+                                                </li>
+                                            <?php endif; ?>
+                                            
                                             <?php for ($i = 1; $i <= $pagination['total_pages']; $i++): ?>
                                                 <li class="page-item <?= $i == $pagination['page'] ? 'active' : '' ?>">
                                                     <a class="page-link" href="?status=<?= esc($current_status ?? 'pending') ?>&page=<?= $i ?>"><?= $i ?></a>
                                                 </li>
                                             <?php endfor; ?>
+                                            
+                                            <?php if ($pagination['page'] < $pagination['total_pages']): ?>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?status=<?= esc($current_status ?? 'pending') ?>&page=<?= $pagination['page'] + 1 ?>">Next</a>
+                                                </li>
+                                            <?php else: ?>
+                                                <li class="page-item disabled">
+                                                    <span class="page-link" style="color: #6c757d; background-color: #fff; border-color: #dee2e6;">Next</span>
+                                                </li>
+                                            <?php endif; ?>
                                         </ul>
                                     </nav>
                                 </div>

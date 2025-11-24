@@ -138,21 +138,35 @@
                                     </table>
                                 </div>
 
-                                <?php if (!empty($pagination)): ?>
+                                <?php if (!empty($pagination) && $pagination['total_pages'] > 1): ?>
                                 <div class="card-footer">
                                     <nav aria-label="Page navigation">
                                         <ul class="pagination justify-content-center mb-0">
-                                            <li class="page-item <?= ($pagination['current_page'] <= 1) ? 'disabled' : '' ?>">
-                                                <a class="page-link" href="?page=<?= $pagination['current_page'] - 1 ?><?= isset($_GET['role']) ? '&role=' . $_GET['role'] : '' ?><?= isset($_GET['is_active']) ? '&is_active=' . $_GET['is_active'] : '' ?>">Previous</a>
-                                            </li>
+                                            <?php if ($pagination['current_page'] > 1): ?>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page=<?= $pagination['current_page'] - 1 ?><?= isset($_GET['role']) ? '&role=' . $_GET['role'] : '' ?><?= isset($_GET['is_active']) ? '&is_active=' . $_GET['is_active'] : '' ?>">Previous</a>
+                                                </li>
+                                            <?php else: ?>
+                                                <li class="page-item disabled">
+                                                    <span class="page-link" style="color: #6c757d; background-color: #fff; border-color: #dee2e6;">Previous</span>
+                                                </li>
+                                            <?php endif; ?>
+                                            
                                             <?php for ($i = 1; $i <= $pagination['total_pages']; $i++): ?>
                                                 <li class="page-item <?= ($i == $pagination['current_page']) ? 'active' : '' ?>">
                                                     <a class="page-link" href="?page=<?= $i ?><?= isset($_GET['role']) ? '&role=' . $_GET['role'] : '' ?><?= isset($_GET['is_active']) ? '&is_active=' . $_GET['is_active'] : '' ?>"><?= $i ?></a>
                                                 </li>
                                             <?php endfor; ?>
-                                            <li class="page-item <?= ($pagination['current_page'] >= $pagination['total_pages']) ? 'disabled' : '' ?>">
-                                                <a class="page-link" href="?page=<?= $pagination['current_page'] + 1 ?><?= isset($_GET['role']) ? '&role=' . $_GET['role'] : '' ?><?= isset($_GET['is_active']) ? '&is_active=' . $_GET['is_active'] : '' ?>">Next</a>
-                                            </li>
+                                            
+                                            <?php if ($pagination['current_page'] < $pagination['total_pages']): ?>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page=<?= $pagination['current_page'] + 1 ?><?= isset($_GET['role']) ? '&role=' . $_GET['role'] : '' ?><?= isset($_GET['is_active']) ? '&is_active=' . $_GET['is_active'] : '' ?>">Next</a>
+                                                </li>
+                                            <?php else: ?>
+                                                <li class="page-item disabled">
+                                                    <span class="page-link" style="color: #6c757d; background-color: #fff; border-color: #dee2e6;">Next</span>
+                                                </li>
+                                            <?php endif; ?>
                                         </ul>
                                     </nav>
                                 </div>

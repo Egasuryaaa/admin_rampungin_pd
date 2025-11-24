@@ -190,17 +190,31 @@
                                         <div class="col-md-6">
                                             <nav aria-label="Page navigation">
                                                 <ul class="pagination justify-content-end mb-0">
-                                                    <li class="page-item <?= ($pagination['current_page'] <= 1) ? 'disabled' : '' ?>">
-                                                        <a class="page-link" href="?page=<?= $pagination['current_page'] - 1 ?><?= !empty($_GET['status']) ? '&status=' . $_GET['status'] : '' ?><?= !empty($_GET['metode_pembayaran']) ? '&metode_pembayaran=' . $_GET['metode_pembayaran'] : '' ?><?= !empty($_GET['start_date']) ? '&start_date=' . $_GET['start_date'] : '' ?><?= !empty($_GET['end_date']) ? '&end_date=' . $_GET['end_date'] : '' ?>">Previous</a>
-                                                    </li>
+                                                    <?php if ($pagination['current_page'] > 1): ?>
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?page=<?= $pagination['current_page'] - 1 ?><?= !empty($_GET['status']) ? '&status=' . $_GET['status'] : '' ?><?= !empty($_GET['metode_pembayaran']) ? '&metode_pembayaran=' . $_GET['metode_pembayaran'] : '' ?><?= !empty($_GET['start_date']) ? '&start_date=' . $_GET['start_date'] : '' ?><?= !empty($_GET['end_date']) ? '&end_date=' . $_GET['end_date'] : '' ?>">Previous</a>
+                                                        </li>
+                                                    <?php else: ?>
+                                                        <li class="page-item disabled">
+                                                            <span class="page-link" style="color: #6c757d; background-color: #fff; border-color: #dee2e6;">Previous</span>
+                                                        </li>
+                                                    <?php endif; ?>
+                                                    
                                                     <?php for ($i = 1; $i <= $pagination['total_pages']; $i++): ?>
                                                         <li class="page-item <?= ($i == $pagination['current_page']) ? 'active' : '' ?>">
                                                             <a class="page-link" href="?page=<?= $i ?><?= !empty($_GET['status']) ? '&status=' . $_GET['status'] : '' ?><?= !empty($_GET['metode_pembayaran']) ? '&metode_pembayaran=' . $_GET['metode_pembayaran'] : '' ?><?= !empty($_GET['start_date']) ? '&start_date=' . $_GET['start_date'] : '' ?><?= !empty($_GET['end_date']) ? '&end_date=' . $_GET['end_date'] : '' ?>"><?= $i ?></a>
                                                         </li>
                                                     <?php endfor; ?>
-                                                    <li class="page-item <?= ($pagination['current_page'] >= $pagination['total_pages']) ? 'disabled' : '' ?>">
-                                                        <a class="page-link" href="?page=<?= $pagination['current_page'] + 1 ?><?= !empty($_GET['status']) ? '&status=' . $_GET['status'] : '' ?><?= !empty($_GET['metode_pembayaran']) ? '&metode_pembayaran=' . $_GET['metode_pembayaran'] : '' ?><?= !empty($_GET['start_date']) ? '&start_date=' . $_GET['start_date'] : '' ?><?= !empty($_GET['end_date']) ? '&end_date=' . $_GET['end_date'] : '' ?>">Next</a>
-                                                    </li>
+                                                    
+                                                    <?php if ($pagination['current_page'] < $pagination['total_pages']): ?>
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?page=<?= $pagination['current_page'] + 1 ?><?= !empty($_GET['status']) ? '&status=' . $_GET['status'] : '' ?><?= !empty($_GET['metode_pembayaran']) ? '&metode_pembayaran=' . $_GET['metode_pembayaran'] : '' ?><?= !empty($_GET['start_date']) ? '&start_date=' . $_GET['start_date'] : '' ?><?= !empty($_GET['end_date']) ? '&end_date=' . $_GET['end_date'] : '' ?>">Next</a>
+                                                        </li>
+                                                    <?php else: ?>
+                                                        <li class="page-item disabled">
+                                                            <span class="page-link" style="color: #6c757d; background-color: #fff; border-color: #dee2e6;">Next</span>
+                                                        </li>
+                                                    <?php endif; ?>
                                                 </ul>
                                             </nav>
                                         </div>
